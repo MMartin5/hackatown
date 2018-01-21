@@ -2,7 +2,7 @@
 <html>
   <head>
     <title>Place searches</title>
-    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+   
     <meta charset="utf-8">
     <style>
       /* Always set the map height explicitly to define the size of the div
@@ -18,12 +18,18 @@
       }
     </style>
     <script>
-      // This example requires the Places library. Include the libraries=places
-      // parameter when you first load the API. For example:
-      // <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places">
+      //directions sur https://stackoverflow.com/questions/5959788/google-maps-api-v3-how-show-the-direction-from-a-point-a-to-point-b-blue-line
+      //reste sur guides Google API, w3schools ou personnel
 
       var map;
       var infowindow;
+      var typePlace = 'store';
+      var latlon;
+
+
+      //directions
+      var directionsDisplay;
+      var directionsService;
 
 
     function getLocation() {
@@ -44,12 +50,19 @@
         var latitude  = position.coords.latitude;
         var longitude = position.coords.longitude;
 
-        var latlon = {lat: latitude, lng: longitude};
+        //latlon = {lat: latitude, lng: longitude};
+        latlon = new google.maps.LatLng(latitude, longitude);
 
         map = new google.maps.Map(document.getElementById('map'), {
           center: latlon,
-          zoom: 15
-        });
+          zoom: 14
+        }
+        );
+
+        //update directions display
+        directionsDisplay= new google.maps.DirectionsRenderer();
+        directionsService = new google.maps.DirectionsService();
+        directionsDisplay.setMap(map);
 
         var marker = new google.maps.Marker({position:latlon,map:map,title:"You are here!"});
 
@@ -58,8 +71,10 @@
         service.nearbySearch({
           location: latlon,
           radius: 2500,      //a changer en fonction du temps restant et du moyen de transport disponible
-          type: ['store']   //a changer en fonction des besoins clients et du type de fil actuel
+          keyword: typePlace   //a changer en fonction des besoins clients et du type de fil actuel
         }, callback);
+
+        
       }
 
       function callback(results, status) {
@@ -78,11 +93,28 @@
         });
 
         google.maps.event.addListener(marker, 'click', function() {
+          calculateAndDisplayRoute(latlon, place.geometry.location);
           infowindow.setContent(place.name);
           infowindow.open(map, this);
           showInfo(place);
         });
       }
+
+      function calculateAndDisplayRoute(pointA, pointB) {
+        directionsService.route({
+            origin: pointA,
+            destination: pointB,
+            travelMode: google.maps.TravelMode.WALKING
+        }, function(response, status) {
+            if (status == google.maps.DirectionsStatus.OK) {
+            directionsDisplay.setDirections(response);
+            } else {
+            window.alert('Directions request failed due to ' + status);
+            }
+        });
+      }
+      
+
 
       function showInfo(place){
         document.getElementById("info").innerHTML = "Nom : "+place.name;
@@ -93,12 +125,13 @@
             }
             
         if(place.photos){
-            var photoUrl = place.photos[0].getUrl({'maxWidth':screenWidth(), 'maxHeight':screenHeight()/3}) //?? je sais pas quoi mettre donc placeholder
+            var photoUrl = place.photos[0].getUrl({'maxWidth':screenWidth(), 'maxHeight':screenHeight()/2})
         }else{
             var photoUrl = "shrug.png"
         }
         document.getElementById("image").src = photoUrl;
       }
+
 
       function screenWidth(){
           var width = (window.innerWidth > 0) ? window.innerWidth : screen.width;
@@ -109,10 +142,22 @@
           return height;
       }
 
+      function changeType(type){
+          typePlace = type;
+          getLocation();
+      }
+
     </script>
   </head>
   <body>
     <div id="map"></div>
+
+    
+    <button onclick="changeType('store')">Magasin</button>
+    <button onclick="changeType('restaurant')">Restaurant</button>
+    <button onclick="changeType('tourism')">Tourisme</button>
+    <button onclick="changeType('cafe')">Café</button>
+    <button onclick="changeType()">Tout</button>
 
     <div id="info"></div>
     <div id="categories"></div>
