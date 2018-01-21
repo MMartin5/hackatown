@@ -1,0 +1,62 @@
+<html>
+<head>
+  <title>
+    QR code manager
+  </title>
+
+  <script type="text/javascript" src="instascan.min.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/4.9.0/firebase.js"></script>
+  <script>
+    // Initialize Firebase
+    var config = {
+      apiKey: "AIzaSyCfjuVCJYetVLl2lg1gk8voJeTKA92A-5c",
+      authDomain: "hackatown-811c8.firebaseapp.com",
+      databaseURL: "https://hackatown-811c8.firebaseio.com",
+      projectId: "hackatown-811c8",
+      storageBucket: "hackatown-811c8.appspot.com",
+      messagingSenderId: "907520663862"
+    };
+    firebase.initializeApp(config);
+  </script>
+
+</head>
+
+<body>
+    <video id="preview"></video>
+    <script type="text/javascript">
+      let opts = {
+        video: document.getElementById('preview'),
+        mirror: false
+      }
+      let scanner = new Instascan.Scanner(opts);
+      scanner.addListener('scan', function (content) {
+        <!-- stop scan and check user status -->
+        var uid = content;
+        var db = firebase.database();
+        db.ref('/users/' + uid + '/place').once('value').then(function(snapshot) {
+          var place = snapshot.val();
+          if (place == 1) {
+            alert('ok');
+          }
+          else {
+            alert('gtfo');
+          }
+        });
+        var video = document.getElementById('preview');
+        var textnode = document.createTextNode(content);
+        video.parentNode.replaceChild(textnode, video)
+        scanner.stop();
+      });
+      Instascan.Camera.getCameras().then(function (cameras) {
+        if (cameras.length > 0) {
+          scanner.start(cameras[0]);
+        } else {
+          console.error('No cameras found.');
+        }
+      }).catch(function (e) {
+        console.error(e);
+      });
+    </script>
+
+  </body>
+</html>
