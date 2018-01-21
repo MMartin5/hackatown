@@ -1,0 +1,97 @@
+
+<!DOCTYPE html>
+<html>
+<body>
+
+
+
+<button type="button" onclick="myFunction()">Click me motherfucker</button>
+
+<p id="demo">Ta mere.</p>
+
+<ol id = "list">
+
+</ol>
+
+
+<script src="https://www.gstatic.com/firebasejs/4.9.0/firebase.js"></script>
+<script>
+  // Initialize Firebase
+  var config = {
+    apiKey: "AIzaSyCfjuVCJYetVLl2lg1gk8voJeTKA92A-5c",
+    authDomain: "hackatown-811c8.firebaseapp.com",
+    databaseURL: "https://hackatown-811c8.firebaseio.com",
+    projectId: "hackatown-811c8",
+    storageBucket: "hackatown-811c8.appspot.com",
+    messagingSenderId: "907520663862"
+  };
+  firebase.initializeApp(config);
+</script>
+
+<script>
+function myFunction() {
+	document.getElementById("list").innerHTML = "";
+  return firebase.database().ref('/listes/pub/clients/').once('value').then(function(snapshot) {
+	var listName = [];
+	var listTime = [];
+	snapshot.forEach(function(listSnapshot)
+	{
+		listName.push(listSnapshot.key);
+		listTime.push(listSnapshot.val());
+	});
+	
+	for (var i = 0; i < listName.length; i++)
+	{
+  	document.getElementById("list").innerHTML += "<li>" + listName[i] + "\t" + listTime[i] + "</li>";
+	}
+});
+}
+</script>
+
+<script>
+	var commentsRef = firebase.database().ref('/listes/pub/clients/');
+	commentsRef.on('child_added', function myFunction() {
+
+  return firebase.database().ref('/listes/pub/clients/').once('value').then(function(snapshot) {
+	var listName = [];
+	var listTime = [];
+	snapshot.forEach(function(listSnapshot)
+	{
+		listName.push(listSnapshot.key);
+		listTime.push(listSnapshot.val());
+	});
+
+		document.getElementById("list").innerHTML = "";
+	for (var i = 0; i < listName.length; i++)
+	{
+  	document.getElementById("list").innerHTML += "<li>" + listName[i] + "\t" + listTime[i] + "</li>";
+	}
+});
+});
+</script>
+
+<script>
+	var commentsRef = firebase.database().ref('/listes/pub/clients/');
+	commentsRef.on('child_removed', function myFunction() {
+
+  return firebase.database().ref('/listes/pub/clients/').once('value').then(function(snapshot) {
+	var listName = [];
+	var listTime = [];
+	snapshot.forEach(function(listSnapshot)
+	{
+		listName.push(listSnapshot.key);
+		listTime.push(listSnapshot.val());
+	});
+	
+	document.getElementById("list").innerHTML = "";
+	for (var i = 0; i < listName.length; i++)
+	{
+  	document.getElementById("list").innerHTML += "<li>" + listName[i] + "\t" + listTime[i] + "</li>";
+	}
+});
+});
+</script>
+
+</body>
+</html>
+
