@@ -1,5 +1,10 @@
 <!DOCTYPE html>
 <html>
+
+<head>
+    <link rel="manifest" href="/manifest.json">
+</head>
+
 <body>
 
 <p id="demo">Click the button to get your position.</p>
@@ -8,6 +13,11 @@
 
 <div id="mapholder"></div>
 
+<script>
+    var text="";
+    $.get(url, function(data){text=data;//Do something more with the data here. data variable contains the response})
+</script>
+// svp ne volez pas la clé c'est juste pour un hackathon
 <script src="https://maps.google.com/maps/api/js?key=AIzaSyCfjuVCJYetVLl2lg1gk8voJeTKA92A-5c"></script>
 <script src="maps.js"></script>
 
