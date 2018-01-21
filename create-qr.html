@@ -2,12 +2,30 @@
 
 <head>
   <script type="text/javascript" src="qrcode.min.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/4.9.0/firebase.js"></script>
+  <script>
+    // Initialize Firebase
+    var config = {
+      apiKey: "AIzaSyCfjuVCJYetVLl2lg1gk8voJeTKA92A-5c",
+      authDomain: "hackatown-811c8.firebaseapp.com",
+      databaseURL: "https://hackatown-811c8.firebaseio.com",
+      projectId: "hackatown-811c8",
+      storageBucket: "hackatown-811c8.appspot.com",
+      messagingSenderId: "907520663862"
+    };
+    firebase.initializeApp(config);
+  </script>
 </head>
 
 <body>
   <div id="qrcode"></div>
   <script type="text/javascript">
-    var qr = new QRCode(document.getElementById("qrcode"), "jesuisuser");
+    var db = firebase.database();
+    var uid = "abdulai";
+    db.ref('/users/' + uid + '/realName').once('value').then(function(snapshot) {
+      var username = snapshot.val();
+      var qr = new QRCode(document.getElementById("qrcode"), username);
+    });
   </script>
 </body>
 
