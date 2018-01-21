@@ -1,0 +1,79 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="shared-styles.html">
+
+<dom-module id="my-view1">
+  <template>
+    <style include="shared-styles">
+      :host {
+        display: block;
+
+        padding: 10px;
+      }
+
+         .icone_qr_code {
+            position: relative;
+            display: inline-block;
+            text-align: center;
+            margin : 0;
+        }
+
+      .icone_qr_code2 {
+          width : 100px;
+          height: 100px;
+          color: #ffffff;
+      }
+
+
+      .circle_icon {
+          position: relative;
+          border-radius: 50%;
+          width: 300 px;
+          height: 300px;
+          color: #ffffff;
+          /*padding-top: 100%;*/
+          background: #03a9f4;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+      }
+
+
+      .footer {
+          flex-direction: column;
+          justify-content: flex-end;
+      }
+
+    </style>
+
+    <div class="card">
+        <p class="textePrincipal">Scanner un QR code</p>
+        <p class="texteSecondaire">Pour commencer votre attente virtuelle</p>
+       <p class="icone_qr_code">
+       <a href="/view2" ><div class="circle_icon"> <iron-icon class="icone_qr_code2" icon="my-icons:camera-alt"></iron-icon></div></a>
+
+       </p>
+
+    </div>
+     <!-- <div class="footer">
+          <a class="button" href="/view2" >Retour</a>
+      </div> -->
+  </template>
+
+  <script>
+    class MyView1 extends Polymer.Element {
+      static get is() { return 'my-view1'; }
+    }
+
+    window.customElements.define(MyView1.is, MyView1);
+  </script>
+</dom-module>

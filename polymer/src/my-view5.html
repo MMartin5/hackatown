@@ -1,0 +1,156 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="shared-styles.html">
+
+<dom-module id="my-view5">
+    <template>
+
+        <script src="https://www.gstatic.com/firebasejs/4.9.0/firebase.js"></script>
+        <script>
+            function COnnection(){
+                // Initialize Firebase
+                var config = {
+                    apiKey: "AIzaSyCfjuVCJYetVLl2lg1gk8voJeTKA92A-5c",
+                    authDomain: "hackatown-811c8.firebaseapp.com",
+                    databaseURL: "https://hackatown-811c8.firebaseio.com",
+                    projectId: "hackatown-811c8",
+                    storageBucket: "hackatown-811c8.appspot.com",
+                    messagingSenderId: "907520663862"
+                };
+                firebase.initializeApp(config);
+            }
+
+        </script>
+
+
+        <script type="text/javascript">
+            function add_event() {
+                var db = firebase.database();
+                var uid = document.getElementById('uid').value;
+                db.ref('/queues/' + uid).once('value').then(function(snapshot) {
+                    var queue = snapshot.val();
+                    if (queue != null) {
+                        alert("Cet id est déjà utilisé. Veuillez en changer.");
+                    }
+                    else {
+                        var name = document.getElementById('event-name').value;
+                        var meanWait = document.getElementById('mean-wait').value;
+                        var timeout = document.getElementById('timeout').value;
+                        var newRef = db.ref('/queues/').child(uid);
+                        newRef.set({
+                            name: name,
+                            meanwait: meanWait,
+                            timeout: timeout
+                        });
+                    }
+                });
+            }
+        </script>
+
+
+
+        <style include="shared-styles">
+            :host {
+                display: block;
+                padding: 10px;
+            }
+
+            .adresse {
+                display: inline-block;
+                width: 100%;
+                border: 3px solid #03a9f4;
+                text-align: left;
+            }
+
+        </style>
+
+        <div class="card">
+
+
+            <p class="textePrincipal">Lieu</p>
+            <p class="adresse"> Adresse</p>
+
+
+            <span class="separateur"></span>
+
+            <p class="textePrincipal">Nombre de personnes</p>
+            <p class="texteSecondaire">estimé</p>
+            <p class="Temps_Petit">
+                <span> X </span>
+                <span> personnes </span>
+            </p>
+
+
+            <span class="separateur"></span>
+
+            <p class="textePrincipal">Temps de passage</p>
+            <p class="texteSecondaire">par personne</p>
+            <p class="Temps_Petit">
+                <span> X </span>
+                <span> min </span>
+            </p>
+
+            <span class="separateur"></span>
+
+
+
+            <table>
+                <tr>
+                    <td>
+                        ID
+                    </td>
+                    <td>
+                        <input type="text" id="uid"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Nom de l'événement
+                    </td>
+                    <td>
+                        <input type="text" id="event-name" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Temps d'attente moyen par client
+                    </td>
+                    <td>
+                        <input type="text" id="mean-wait" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Délai avant suppression d'un client en retard
+                    </td>
+                    <td>
+                        <input type="text" id="timeout" />
+                    </td>
+                </tr>
+            </table>
+
+
+        </div>
+
+        <div class="footer">
+            <a class="button" href="/view6"  onclick="add_event();" >Créer l'évènement</a>
+        </div>
+    </template>
+
+    <script>
+        class Myview5 extends Polymer.Element {
+            static get is() { return 'my-view5'; }
+        }
+
+        window.customElements.define(Myview5.is, Myview5);
+    </script>
+</dom-module>

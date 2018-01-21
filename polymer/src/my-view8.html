@@ -1,0 +1,85 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="shared-styles.html">
+
+<dom-module id="my-view8">
+    <template>
+        <style include="shared-styles">
+            :host {
+                display: block;
+
+                padding: 10px;
+            }
+
+            .map {
+                display: block;
+                padding: 0px;
+                width: 100vw;
+                height: 400px;
+                margin-top: -10px;
+                margin-left: -10px;
+                margin-right: -10px;
+                border: 3px solid #03a9f4;
+            }
+
+            .container_icon {
+                width: 104%;
+                height: 100px;
+                display: flex;
+                flex-direction: row;
+                justify-content: space-around;
+            }
+
+            .Resultsmap {
+                display: block;
+                padding: 0px;
+                width: 100vw;
+                height: 400px;
+                margin-top: -0px;
+                margin-left: -10px;
+                border: 3px solid #03a9f4;
+            }
+
+        </style>
+
+        <div class="map">CARTE</div>
+
+        <div class="card">
+
+            <span class="separateurMap1"></span>
+            <p class="container_icon">
+                <iron-icon class="icone_map" icon="my-icons:shopping-cart"></iron-icon>
+                <iron-icon class="icone_map" icon="my-icons:restaurant-menu"></iron-icon>
+                <iron-icon class="icone_map" icon="my-icons:free-breakfast"></iron-icon>
+                <iron-icon class="icone_map" icon="my-icons:place"></iron-icon>
+                <iron-icon class="icone_map" icon="my-icons:shuffle"></iron-icon>
+            </p>
+            <span class="separateurMap2"></span>
+        </div>
+
+            <div class="Resultsmap">Resultats</div>
+
+
+        <div class="footer">
+            <a class="button" href="/view1" >Retour</a>
+        </div>
+    </template>
+
+    <script>
+        var Lscreen=screen.width;
+        class Myview8 extends Polymer.Element {
+            static get is() { return 'my-view8'; }
+        }
+
+        window.customElements.define(Myview8.is, Myview8);
+    </script>
+</dom-module>

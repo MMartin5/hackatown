@@ -1,0 +1,52 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="shared-styles.html">
+
+<dom-module id="my-view7">
+    <template>
+        <style include="shared-styles">
+            :host {
+                display: block;
+
+                padding: 10px;
+            }
+
+            .adresse {
+                display: inline-block;
+                width: 100%;
+                height: 200px;
+                border: 3px solid #03a9f4;
+            }
+
+        </style>
+
+        <div class="card">
+
+
+            <p class="textePrincipal">Le temps a été reporté</p>
+            <p class="texteSecondaire">Vous arriverez au bout de la file d'attente dans X minutes.</p>
+
+        </div>
+
+        <div class="footer">
+            <a class="button" href="/view1" >Retour</a>
+        </div>
+    </template>
+
+    <script>
+        class Myview7 extends Polymer.Element {
+            static get is() { return 'my-view7'; }
+        }
+
+        window.customElements.define(Myview7.is, Myview7);
+    </script>
+</dom-module>

@@ -1,0 +1,140 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="shared-styles.html">
+
+<dom-module id="my-view2">
+    <template>
+        <style include="shared-styles">
+            :host {
+                display: block;
+
+                padding: 10px;
+            }
+
+            .photoQRCode {
+                display: inline-block;
+                width: 100%;
+                height: 200px;
+                border: 3px solid #03a9f4;
+            }
+
+            .icone_qr_code {
+                position: relative;
+                display: inline-block;
+                text-align: center;
+                margin : 0;
+            }
+
+
+
+
+            .footer {
+                flex-direction: column;
+                justify-content: flex-end;
+            }
+
+        </style>
+
+        <div class="card">
+            <p class="textePrincipal">Scanner un QR code</p>
+            <p class="texteSecondaire">Pour commencer votre attente virtuelle</p>
+            <p id="photoQRCode" class="photoQRCode" onclick="Camera();"></p>
+
+            <video id="preview"></video>
+
+            <p class="icone_qr_code">
+                <paper-icon-button  icon="my-icons:camera-alt" camera-qr-code></paper-icon-button>
+                <iron-icon icon="my-icons:camera-alt"></iron-icon>
+            </p>
+
+        </div>
+        <div class="footer">
+            <a class="button" href="/view1" >Retour</a>
+        </div>
+
+
+        <script type="text/javascript" src="/src/instascan.min.js"></script>
+
+        <script type="text/javascript">
+            function enterQueue(queueName) {
+                var db = firebase.database();
+                var ref = db.ref('/queues/' + queueName);
+                ref.once('value').then(function(snapshot) {
+                    var queue = snapshot.val();
+                    if (queue == null) {
+                        alert("File inconnue. Veuillez vérifier l'identifiant.");
+                    }
+                    else {
+                        <!-- enter queue -->
+                        var clientId = 'fantomas'; <!-- TODO get userid -->
+                        var newClientRef = db.ref('/queues/' + queueName + '/clients/').child(clientId);
+                        var d = new Date();
+                        var t = d.getTime(); <!-- get timestamp -->
+                        <!-- set rank -->
+                        db.ref('/queues/' + queueName + '/clients/').once('value').then(function(snapshot) {
+                            var r = 1 + snapshot.numChildren();
+                            newClientRef.set({
+                                rank: r,
+                                entryTime: t
+                            });
+                        });
+                        var newQueueRef = db.ref('/users/' + clientId);
+                        newQueueRef.update({
+                            queue: queueName
+                        });
+                    }
+                });
+            }
+        </script>
+
+        <script type="text/javascript">
+
+            function Camera(){
+                let opts = {
+                    video: document.getElementById('preview'),
+                    mirror: false
+                }
+                let scanner = new Instascan.Scanner(opts);
+                scanner.addListener('scan', function (content) {
+                    <!-- stop scan and go to new page -->
+                    enterQueue(content);
+                    // window.location.href = "ok.html";
+                    var video = document.getElementById('preview');
+                    var textnode = document.createTextNode(content);
+                    video.parentNode.replaceChild(textnode, video)
+                    scanner.stop();
+                });
+                Instascan.Camera.getCameras().then(function (cameras) {
+                    if (cameras.length > 0) {
+                        scanner.start(cameras[0]);
+                    } else {
+                        console.error('No cameras found.');
+                    }
+                }).catch(function (e) {
+                    console.error(e);
+                });
+            }
+
+        </script>
+
+    </template>
+
+    <script>
+        class MyView2 extends Polymer.Element {
+            static get is() { return 'my-view2'; }
+        }
+
+        window.customElements.define(MyView2.is, MyView2);
+    </script>
+
+
+</dom-module>
