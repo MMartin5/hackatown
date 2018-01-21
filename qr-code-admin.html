@@ -1,5 +1,7 @@
 <html>
 <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
   <title>
     QR code manager
   </title>
@@ -19,6 +21,48 @@
     firebase.initializeApp(config);
   </script>
 
+  <script type="text/javascript">
+    function removeFromQueue(clientId) {
+      var db = firebase.database();
+      db.ref('/users/' + clientId + '/queue').once('value').then(function(snapshot) {
+        var queueName = snapshot.val();
+        if (queueName == null) {
+          alert("Aucune file en attente.");
+        }
+        else {
+          db.ref('/queues/' + queueName + '/clients/' + clientId + '/rank').once('value').then(function(snapshot) {
+            var userRank = snapshot.val();
+            if (userRank == null) {
+              alert("Client inconnu. Veuillez vérifier l'identifiant.");
+            }
+            else {
+              if (userRank == 1) {
+                <!-- exit queue -->
+                var clientRef = db.ref('/queues/' + queueName + '/clients/' + clientId);
+                clientRef.remove();
+                var queueRef = db.ref('/users/' + clientId + '/queue');
+                queueRef.remove();
+                <!-- edit rank for all -->
+                db.ref('/queues/' + queueName + '/clients/').once('value').then(function(snapshot) {
+                  snapshot.forEach(function(childSnapshot) {
+                    var userId = childSnapshot.key;
+                    var userFields = childSnapshot.val();
+                    var childRef = db.ref('/queues/' + queueName + '/clients/' + userId);
+                    var newRank = Number(userFields.rank) - 1;
+                    childRef.update({rank: newRank});
+                  });
+                });
+              }
+              else {
+                alert("Veuillez attendre votre tour.");
+              }
+            }
+          });
+        }
+      });
+    }
+  </script>
+
 </head>
 
 <body>
@@ -31,17 +75,20 @@
       let scanner = new Instascan.Scanner(opts);
       scanner.addListener('scan', function (content) {
         <!-- stop scan and check user status -->
-        var uid = content;
-        var db = firebase.database();
-        db.ref('/users/' + uid + '/place').once('value').then(function(snapshot) {
-          var place = snapshot.val();
-          if (place == 1) {
-            alert('ok');
-          }
-          else {
-            alert('gtfo');
-          }
-        });
+        removeFromQueue(content);
+
+
+        // var uid = content;
+        // var db = firebase.database();
+        // db.ref('/users/' + uid + '/place').once('value').then(function(snapshot) {
+        //   var place = snapshot.val();
+        //   if (place == 1) {
+        //     alert('ok');
+        //   }
+        //   else {
+        //     alert('gtfo');
+        //   }
+        // });
         var video = document.getElementById('preview');
         var textnode = document.createTextNode(content);
         video.parentNode.replaceChild(textnode, video)

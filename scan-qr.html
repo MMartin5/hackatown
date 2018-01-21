@@ -1,10 +1,57 @@
 <html>
+
 <head>
+  <script src="https://www.gstatic.com/firebasejs/4.9.0/firebase.js"></script>
+  <script>
+    // Initialize Firebase
+    var config = {
+      apiKey: "AIzaSyCfjuVCJYetVLl2lg1gk8voJeTKA92A-5c",
+      authDomain: "hackatown-811c8.firebaseapp.com",
+      databaseURL: "https://hackatown-811c8.firebaseio.com",
+      projectId: "hackatown-811c8",
+      storageBucket: "hackatown-811c8.appspot.com",
+      messagingSenderId: "907520663862"
+    };
+    firebase.initializeApp(config);
+  </script>
+
   <title>
     QR code manager
   </title>
 
   <script type="text/javascript" src="instascan.min.js"></script>
+
+  <script type="text/javascript">
+    function enterQueue(queueName) {
+      var db = firebase.database();
+      var ref = db.ref('/queues/' + queueName);
+      ref.once('value').then(function(snapshot) {
+        var queue = snapshot.val();
+        if (queue == null) {
+          alert("File inconnue. Veuillez vérifier l'identifiant.");
+        }
+        else {
+          <!-- enter queue -->
+          var clientId = 'fantomas'; <!-- TODO get userid -->
+          var newClientRef = db.ref('/queues/' + queueName + '/clients/').child(clientId);
+          var d = new Date();
+          var t = d.getTime(); <!-- get timestamp -->
+          <!-- set rank -->
+          db.ref('/queues/' + queueName + '/clients/').once('value').then(function(snapshot) {
+            var r = 1 + snapshot.numChildren();
+            newClientRef.set({
+              rank: r,
+              entryTime: t
+            });
+          });
+          var newQueueRef = db.ref('/users/' + clientId);
+          newQueueRef.update({
+            queue: queueName
+          });
+        }
+      });
+    }
+  </script>
 
 </head>
 
@@ -18,7 +65,8 @@
       let scanner = new Instascan.Scanner(opts);
       scanner.addListener('scan', function (content) {
         <!-- stop scan and go to new page -->
-        window.location.href = "ok.html";
+        enterQueue(content);
+        // window.location.href = "ok.html";
         var video = document.getElementById('preview');
         var textnode = document.createTextNode(content);
         video.parentNode.replaceChild(textnode, video)

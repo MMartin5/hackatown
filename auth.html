@@ -1,0 +1,54 @@
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+  <script src="https://www.gstatic.com/firebasejs/4.9.0/firebase.js"></script>
+  <script>
+    // Initialize Firebase
+    var config = {
+      apiKey: "AIzaSyCfjuVCJYetVLl2lg1gk8voJeTKA92A-5c",
+      authDomain: "hackatown-811c8.firebaseapp.com",
+      databaseURL: "https://hackatown-811c8.firebaseio.com",
+      projectId: "hackatown-811c8",
+      storageBucket: "hackatown-811c8.appspot.com",
+      messagingSenderId: "907520663862"
+    };
+    firebase.initializeApp(config);
+  </script>
+</head>
+
+<body>
+  <script type="text/javascript">
+    function connection() {
+      var uid = document.getElementById('uid').value;
+      var db = firebase.database();
+      var ref = db.ref('/users/' + uid);
+      ref.once('value').then(function(snapshot) {
+        var user = snapshot.val();
+        if (user != null) {
+          <!-- TODO page utilisateur -->
+          console.log("connexion réussie");
+
+          db.ref('/users/' + uid).once('value').then(function(snapshot) {
+            var user = snapshot.val();
+            var queueId = user.queue;
+            db.ref('/queues/' + queueId).once('value').then(function(snapshot) {
+              var queue = snapshot.val();
+              var mean = queue.meanwait;
+              db.ref('/queues/' + queueId + '/clients/' + uid).once('value').then(function(snapshot) {
+                var rank = snapshot.val().rank;
+                var timeLeft = mean * rank;
+                <!-- TODO use timeLeft -->
+              });
+            });
+          });
+        }
+      });
+    }
+  </script>
+
+  Entrez votre id : <input type="text" id="uid" /> </br>
+  <input type="button" value="Connexion" onclick="connection();"  />
+
+</body>
+</html>
