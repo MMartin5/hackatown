@@ -1,0 +1,83 @@
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+  <script src="https://www.gstatic.com/firebasejs/4.9.0/firebase.js"></script>
+  <script>
+    // Initialize Firebase
+    var config = {
+      apiKey: "AIzaSyCfjuVCJYetVLl2lg1gk8voJeTKA92A-5c",
+      authDomain: "hackatown-811c8.firebaseapp.com",
+      databaseURL: "https://hackatown-811c8.firebaseio.com",
+      projectId: "hackatown-811c8",
+      storageBucket: "hackatown-811c8.appspot.com",
+      messagingSenderId: "907520663862"
+    };
+    firebase.initializeApp(config);
+  </script>
+</head>
+
+<body>
+  <script type="text/javascript">
+    function add_event() {
+      var db = firebase.database();
+      var uid = document.getElementById('uid').value;
+      db.ref('/queues/' + uid).once('value').then(function(snapshot) {
+        var queue = snapshot.val();
+        if (queue != null) {
+          alert("Cet id est déjà utilisé. Veuillez en changer.");
+        }
+        else {
+          var name = document.getElementById('event-name').value;
+          var meanWait = document.getElementById('mean-wait').value;
+          var timeout = document.getElementById('timeout').value;
+          var newRef = db.ref('/queues/').child(uid);
+          newRef.set({
+            name: name,
+            meanwait: meanWait,
+            timeout: timeout
+          });
+        }
+      });
+    }
+  </script>
+
+  <table>
+    <tr>
+      <td>
+        ID
+      </td>
+      <td>
+        <input type="text" id="uid"/>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        Nom de l'événement
+      </td>
+      <td>
+        <input type="text" id="event-name" />
+      </td>
+    </tr>
+    <tr>
+      <td>
+        Temps d'attente moyen par client
+      </td>
+      <td>
+        <input type="text" id="mean-wait" />
+      </td>
+    </tr>
+    <tr>
+      <td>
+        Délai avant suppression d'un client en retard
+      </td>
+      <td>
+        <input type="text" id="timeout" />
+      </td>
+    </tr>
+  </table>
+
+  <input type="button" value="Ajouter" onclick="add_event();"/>
+
+</body>
+</html>
